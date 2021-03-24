@@ -1,0 +1,120 @@
+<html>
+<head>
+	<title>CSE 313 - Project 3</title>
+	
+	<!-- libraries -->
+	<script type="text/javascript" src="gl-matrix-min.js"></script>
+	<script type="text/javascript" src="webgl-utils.js"></script>
+
+	<style>
+		#overlay {
+			position: absolute;
+			left: 10px;
+			top: 10px;
+			color: white;
+		}
+		h3 {
+			margin-bottom: 0;
+		}
+		h4 {
+			margin-block-start: 0.5em;
+			margin-block-end: 0.5em;
+		}
+	</style>
+	
+	<script id="shader-fs" type="x-shader/x-fragment">
+	////////////////////////////////////////////////////////
+	///FRAGMENT SHADER START
+	////////////////////////////////////////////////////////
+
+		//sets the precision of vColor
+		precision mediump float;
+
+		//The variable labeled varying is input
+		//vColor is interpolated over vertices
+		//varying vec4 vColor;
+
+		//Input texture coordinates
+		//webGL figures out the interpolated cooridnates along the texture
+		varying vec2 vTextureCoord;
+		
+		//a sampler is the shader's representation of the texture.
+		uniform sampler2D uSampler;
+	
+		void main(void) {
+			//assign the pixel color to the interpolated color
+			// gl_FragColor = vColor;
+			
+			//texture2D gets the appropriate pixel color from the texture.
+			//s and t are normally used for texture coordinates, and 
+			//webGL supports them.  You could also use x and y with no error.
+			gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+		}
+	////////////////////////////////////////////////////////
+	///FRAGMENT SHADER END
+	////////////////////////////////////////////////////////
+	</script>
+	
+	<script id="shader-vs" type="x-shader/x-vertex">
+	//////////////////////////////////////////////////////
+	///VERTEX SHADER START
+	//////////////////////////////////////////////////////
+		//Attributes are inputs provided for each vertex,
+		//different for each vertex in the rendering call
+	
+		//input: vertex position
+		attribute vec3 aVertexPosition;	
+		
+		//input: vertex color
+		//attribute vec4 aVertexColor;
+
+		//input: vertex texture cooridnates
+		attribute vec2 aTextureCoord;
+
+		//Uniforms are inputs provided for ALL Vertices, 
+		//the same for all vertices in any rendering call
+		uniform mat4 uMVMatrix;
+		uniform mat4 uPMatrix;
+		
+		// varying vec4 vColor;
+		varying vec2 vTextureCoord;
+
+		void main(void) {
+			gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+			
+			//pass vertex color to fragment shader
+			// vColor = aVertexColor;
+			
+			// pass texture coordinates to 
+			vTextureCoord = aTextureCoord;
+		}
+	//////////////////////////////////////////////////////
+	///VERTEX SHADER END
+	//////////////////////////////////////////////////////
+	</script>
+
+	<script src="project3.js"></script>
+</head>
+<body onload="webGLStart();">
+	<canvas id="webGLcanvas" style="border: none;"></canvas>
+	
+	<div id="overlay">
+		<h3>Show / Hide Planets</h3>
+		<input type="checkbox" id="drawMercury" checked /> (1) Mercury<br/>
+		<input type="checkbox" id="drawVenus" checked /> (2) Venus<br/>
+		<input type="checkbox" id="drawEarth" checked /> (3) Earth<br/>
+		<input type="checkbox" id="drawMoon" checked /> (3.1) The Moon<br/>
+		<input type="checkbox" id="drawMars" checked /> (4) Mars<br/>
+		<input type="checkbox" id="drawJupiter" checked /> (5) Jupiter<br/>
+		<input type="checkbox" id="drawSaturn" checked /> (6) Saturn<br/>
+		<input type="checkbox" id="drawUranus" checked /> (7) Uranus<br/>
+		<input type="checkbox" id="drawNeptune" checked /> (8) Neptune<br/>
+		<h4>Click and drag the mouse to move the scene.</h4>
+		<h4>Scroll the mouse wheel to zoom in and out.</h4>
+		<p>
+			Eliptical orbits are to astronomical scale, and are best viewed from the top-down.<br />
+			Orbital inclinations (planes) are eggagerated to show effect.
+		</p>
+	</div>
+</body>
+</html>
