@@ -416,7 +416,7 @@ var moonProps = {
 	name: 'moon',
 	x: 0, y: 0, z: 0,
 	radius: 0.3, slices: 24, stacks: 12,
-	rotation: 0, rotationSpeed: 20,
+	rotation: 0, rotationSpeed: 0,
 	orbitalPeriodDivisor: 20,
 	orbitalRadius: 1.5,
 	orbitalEccentricity: 0,
@@ -473,12 +473,22 @@ function addCheckboxEventListeners() {
 	moonCheckbox.addEventListener('change', function() {
 		moonProps.visible = this.checked;
 	});
+	
+	animateCheckbox = document.getElementById('animateScene');
+	animateCheckbox.addEventListener('change', function() {
+		animateScene = this.checked;
+	});
 }
 
 var lastTime = 0;
+var animateScene = true;
 
 // compute altered variables for animation
 function animate() {
+	if (!animateScene) {
+		return;
+	}
+	
 	var currentTime = new Date().getTime();
 	if (lastTime != 0) {
 		var elapsed = currentTime - lastTime;
